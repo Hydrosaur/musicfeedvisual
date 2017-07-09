@@ -1,0 +1,43 @@
+<button onclick="runAjax();">Run</button>
+<video autoplay></video>
+<script type="text/javascript">
+  navigator.getUserMedia  = navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia;
+
+  var video = document.querySelector('video');
+
+  if (navigator.getUserMedia) {
+    navigator.getUserMedia({video: true}, function(stream) {
+      video.src = window.URL.createObjectURL(stream);
+      console.log(video.src);
+    }, function(){});
+  } else {
+    video.src = 'somevideo.webm'; // fallback.
+  }
+  function runAjax() {
+    var params = {
+      // Request parameters
+    };
+    $.ajax({
+      url: "http://korbinskode.com:3012/face?" + $.param(params),
+      type: "POST",
+      data: generateThumbnail(),
+    }).done(function(data) {
+      console.log(data)
+    }).fail(function() {
+    	//console.log(generateThumbnail());
+      alert("error");
+    });
+  };
+  function generateThumbnail() {
+    var c = document.createElement("canvas");
+    var ctx = c.getContext("2d");
+    c.width = 640;
+    c.height = 370;
+    ctx.drawImage(video, 0, 0, 640, 370);
+    return c.toDataURL('application/octet-stream');
+  }
+</script>
+</html>
